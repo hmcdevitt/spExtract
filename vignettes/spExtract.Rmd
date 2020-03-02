@@ -1,10 +1,10 @@
 ---
-title: "Extractions"
+title: "spExtract"
 author: "Heather McDevitt"
 date: "March 2020"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Extractions}
+  %\VignetteIndexEntry{spExtract}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
