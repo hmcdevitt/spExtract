@@ -1,9 +1,9 @@
 #' extract_matrix
 #'
-#' @param matrix tbc
-#' @param coords tbc
-#' @param raster_extent tbc
-#' @param raster_res tbc
+#' @param matrix a matrix created from a Raster layer
+#' @param coords a 2 column matrix/dataframe with the x and y coordinates in same projection as the Raster layer
+#' @param raster_extent an extent object. contains xmin, xmax, ymin, ymax of the Raster layer the matrix was created from
+#' @param raster_res a vector with 2 values indicating the x and y resolution of each Raster cell
 #'
 #' @return
 #' @export

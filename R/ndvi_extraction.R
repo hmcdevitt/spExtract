@@ -1,6 +1,8 @@
 #' ndvi_extraction
 #'
-#' This function matches NDVI values to spatial point data. It will return:
+#' This function matches NDVI values to spatial point data. 
+#' 
+#' It will return:
 #'
 #'   - **iNDVI** -- interpolated NDVI, giving the estimated value of NDVI if the
 #'   date of the spatial data falls in between the dates of NDVI layers
@@ -14,17 +16,18 @@
 #' be in UTM (or similar). The function will still work if the data are in latlong, however there may be
 #' some cases where the values returned are associated with a neighbouring NDVI cell. This is due to
 #' rounding issues.
+#' 
+#' The code used in this function is based off code written by Jon Lindsay and Thomas Morrison.
 #'
 #' @param files_desc object returned from *build_ndvi_desc*
 #' @param array an array with dimensions 1 and 2 being the y and x values (respectively) of the rasters layers
 #'  identified in files_desc, the 3rd dimension is multiple dates for same spatial extent.
-#'  Build using *14_NDVIBuildArray*
-#' @param extent an extent object. contains xmin, xmax, ymin, ymax of the raster layers making up the array
+#'  Build using *build_ndvi_array*
+#' @param extent an extent object. contains xmin, xmax, ymin, ymax of the raster layers used to make the array
 #' @param resolution a vector with 2 values indicating the x and y resolution of each raster cell
 #' @param avg_matrix (default: NULL) if calculating anomally NDVI this is a matrix with the long-term mean NDVI values
 #' @param date a vector of the dates
 #' @param coords a 2 column matrix/dataframe with the x and y coordinates in same projection as extent
-#' @param cpus (default: 1) how many cpus you have available to parallelize across
 #'
 #' @return
 #' @export
@@ -36,8 +39,7 @@ ndvi_extraction <- function(files_desc,
                             resolution,
                             avg_matrix = NULL,
                             date,
-                            coords,
-                            cpus = 1) {
+                            coords) {
 
   # Warning messages
   if (length(date) > 1 && length(date) != nrow(coords))
@@ -46,28 +48,12 @@ ndvi_extraction <- function(files_desc,
   # Check if extraction is across multiple dates
   if (length(date) == 1) {multi_extract <- T} else {multi_extract <- F}
 
-  # # Initiate snowfall
-  # sfInit(parallel=T, cpus=cpus, type="SOCK")
-  #
-  # # Specify any homemade functions and objects to be read into the multithread environment
-  # sfExport("files_desc","array","extent","avg_matrix","date","coords","multi_extract","extract_matrix","extract_array")
-  #
-  # # Specify all packages to be used in the multithread environment
-  # pks <- c("raster")
-  # for(i in 1:length(pks)){
-  #   sfLibrary(pks[i],character.only=TRUE)
-  #
-  # }
-  # rm(pks)
-  #
-  # ### SNOWFALLL - parallel process
-  # # for each row in the length of dates, apply the following function, rbind all results
-  # results <- do.call(rbind, sfClusterApplyLB(1:length(date), function(i){
-
+  # Initiate results dataframe
   results <- data.frame(indvi = rep(NA, length(date)),
                         dndvi = rep(NA, length(date)),
                         andvi = rep(NA, length(date)))
-
+  
+  # Loop throught each dat
   for(i in 1:length(date)) {
     # find the index of the closest date in the date vector
     z_ind <- which.min(abs(as.numeric(files_desc$date-(date[i]))))
@@ -132,5 +118,5 @@ ndvi_extraction <- function(files_desc,
 
   }
 
-  results
+  return(results)
 }

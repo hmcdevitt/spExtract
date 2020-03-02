@@ -7,13 +7,13 @@
 extract_matrix(matrix, coords, raster_extent, raster_res)
 }
 \arguments{
-\item{matrix}{tbc}
+\item{matrix}{a matrix created from a Raster layer}
 
-\item{coords}{tbc}
+\item{coords}{a 2 column matrix/dataframe with the x and y coordinates in same projection as the Raster layer}
 
-\item{raster_extent}{tbc}
+\item{raster_extent}{an extent object. contains xmin, xmax, ymin, ymax of the Raster layer the matrix was created from}
 
-\item{raster_res}{tbc}
+\item{raster_res}{a vector with 2 values indicating the x and y resolution of each Raster cell}
 }
 \value{
 

@@ -11,8 +11,7 @@ ndvi_extraction(
   resolution,
   avg_matrix = NULL,
   date,
-  coords,
-  cpus = 1
+  coords
 )
 }
 \arguments{
@@ -20,9 +19,9 @@ ndvi_extraction(
 
 \item{array}{an array with dimensions 1 and 2 being the y and x values (respectively) of the rasters layers
 identified in files_desc, the 3rd dimension is multiple dates for same spatial extent.
-Build using *14_NDVIBuildArray*}
+Build using *build_ndvi_array*}
 
-\item{extent}{an extent object. contains xmin, xmax, ymin, ymax of the raster layers making up the array}
+\item{extent}{an extent object. contains xmin, xmax, ymin, ymax of the raster layers used to make the array}
 
 \item{resolution}{a vector with 2 values indicating the x and y resolution of each raster cell}
 
@@ -31,17 +30,17 @@ Build using *14_NDVIBuildArray*}
 \item{date}{a vector of the dates}
 
 \item{coords}{a 2 column matrix/dataframe with the x and y coordinates in same projection as extent}
-
-\item{cpus}{(default: 1) how many cpus you have available to parallelize across}
 }
 \value{
 
 }
 \description{
-This function matches NDVI values to spatial point data. It will return:
+This function matches NDVI values to spatial point data.
 }
 \details{
-- **iNDVI** -- interpolated NDVI, giving the estimated value of NDVI if the
+It will return:
+
+  - **iNDVI** -- interpolated NDVI, giving the estimated value of NDVI if the
   date of the spatial data falls in between the dates of NDVI layers
   (which are produced at 16 day intervals)
   - **dNDVI** -- delta NDVI describes the change in NDVI between the closest
@@ -53,4 +52,6 @@ The function is most accurate using projected data, i.e. both the NDVI files and
 be in UTM (or similar). The function will still work if the data are in latlong, however there may be
 some cases where the values returned are associated with a neighbouring NDVI cell. This is due to
 rounding issues.
+
+The code used in this function is based off code written by Jon Lindsay and Thomas Morrison.
 }
