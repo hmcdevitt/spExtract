@@ -1,0 +1,119 @@
+---
+title: "Extractions"
+author: "Heather McDevitt"
+date: "March 2020"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Extractions}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+  
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+  
+```{r setup}
+library(spExtract)
+library(raster)
+library(tictoc)
+```
+
+### Set up example system
+
+```{r cache=TRUE}
+# Generate study site boundaries
+studybound <- extent(c(xmin = 650000,
+                       xmax = 800000,
+                       ymin = 9700000,
+                       ymax = 9850000))
+bbox <- bbox(studybound)
+
+# Generate example resource layers
+r1 <- raster(x = studybound, vals = rnorm(2500, mean = 0, sd = 3), nrows = 50, ncols = 50)
+plot(r1)
+
+r2 <- raster(x = studybound, vals = seq(0.1, 250, 0.1), nrows = 50, ncols = 50)
+plot(r2)
+
+s1 <- stack(r1, r2)
+
+# Generate example locations
+data <- as.data.frame(sampleRandom(x = r1, size = 200, xy = T)[,1:2])
+plot(data, pch=20)
+```
+
+### Extract from single layers
+
+```{r cache=TRUE}
+# Turn raster to matrix
+r1_mat <- as.matrix(r1)
+r2_mat <- as.matrix(r2)
+
+# Create extent objects
+r1_ext <- extent(r1)
+r2_ext <- extent(r2)
+
+# Create resolution objects
+r1_res <- res(r1)
+r2_res <- res(r2)
+
+# Extract values
+tic()
+data$r1 <- extract_matrix(matrix = r1_mat, 
+                          coords = data[,1:2], 
+                          raster_extent = r1_ext, 
+                          raster_res = r1_res)
+
+data$r2 <- extract_matrix(matrix = r2_mat, 
+                          coords = data[,1:2], 
+                          raster_extent = r2_ext, 
+                          raster_res = r2_res)
+toc()
+
+# Compare time to raster::extract
+tic()
+data$t1 <- raster::extract(r1, data[,1:2])
+data$t2 <- raster::extract(r2, data[,1:2])
+toc()
+
+# View head of data
+head(data,10)
+
+```
+
+
+### Extract from stack
+
+```{r cache=TRUE}
+# Generate array
+a1 <- as.array(s1)
+
+# Extract values
+tic()
+data$a1 <- extract_array(array = a1, 
+                         extent = r1_ext, 
+                         coords = data[,1:2], 
+                         third_dim_ind = 1, 
+                         resolution = r1_res)
+data$a2 <- extract_array(array = a1, 
+                         extent = r1_ext, 
+                         coords = data[,1:2], 
+                         third_dim_ind = 2, 
+                         resolution = r1_res)
+toc()
+
+# Compare time to raster::extract
+tic()
+data[,9:10] <- raster::extract(s1, data[,1:2])
+toc()
+
+head(data,10)
+```
+
+
+
+

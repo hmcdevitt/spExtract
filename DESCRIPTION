@@ -15,7 +15,8 @@ Imports:
     sp,
     tiff,
     lubridate,
-    raster
+    raster,
+    tictoc
 RoxygenNote: 7.0.2
 Suggests: 
     knitr,
