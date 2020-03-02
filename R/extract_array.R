@@ -20,8 +20,8 @@
 #'
 #' @examples
 extract_array <- function(array, extent, coords, third_dim_ind, resolution) {
-  a <- ceiling((coords[,1] - xmin(extent))/resolution[1])
-  b <- (nrow(array):1)[ceiling((coords[,2] - ymin(extent))/resolution[2])]
+  a <- ceiling((coords[,1] - raster::xmin(extent))/resolution[1])
+  b <- (nrow(array):1)[ceiling((coords[,2] - raster::ymin(extent))/resolution[2])]
   ndvi <- array[cbind(b, a, third_dim_ind)]
   ndvi
 }

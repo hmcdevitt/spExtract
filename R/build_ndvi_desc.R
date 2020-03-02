@@ -18,7 +18,7 @@ build_ndvi_desc <- function(folder, # full path location of folder containing ND
 
   ndvi.data <- data.frame(filenames=list.files(folder,pattern = "MOD13Q1"),
                         year=NA,
-                        date=ymd("1970-01-01"))
+                        date=lubridate::ymd("1970-01-01"))
 
   ndvi.data$filenames <- as.character(ndvi.data$filenames)
 
@@ -26,7 +26,7 @@ build_ndvi_desc <- function(folder, # full path location of folder containing ND
                           format=date.format,
                           tz="GMT")
 
-  ndvi.data$year <- year(ndvi.data$date)
+  ndvi.data$year <- lubridate::year(ndvi.data$date)
 
   ndvi.data$folder <- folder
 

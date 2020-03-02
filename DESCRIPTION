@@ -1,5 +1,5 @@
 Package: spExtract
-Title: What the Package Does (One Line, Title Case)
+Title: Extract values at spatial locations from Raster* objects as matrices
 Version: 0.0.0.9000
 Authors@R: 
     person(given = "First",
@@ -17,3 +17,7 @@ Imports:
     lubridate,
     raster
 RoxygenNote: 7.0.2
+Suggests: 
+    knitr,
+    rmarkdown
+VignetteBuilder: knitr
