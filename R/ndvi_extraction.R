@@ -1,16 +1,16 @@
 #' ndvi_extraction
 #'
-#' This function matches NDVI values to spatial point data. 
+#' @description This function matches NDVI values to spatial point data. It will return:
 #' 
-#' It will return:
-#'
-#'   - **iNDVI** -- interpolated NDVI, giving the estimated value of NDVI if the
+#'   1. \strong{iNDVI}: interpolated NDVI, giving the estimated value of NDVI if the
 #'   date of the spatial data falls in between the dates of NDVI layers
-#'   (which are produced at 16 day intervals)
-#'   - **dNDVI** -- delta NDVI describes the change in NDVI between the closest
-#'   date layer and the layer previous
-#'   - **aNDVI** -- anomally NDVI is *(iNDVI-mNDVI)/mNDVI* where mNDVI is the long-term
-#'   mean NDVI value for the given cell
+#'   (which are produced at 16 day intervals)     
+#'
+#'   2. \strong{dNDVI}: delta NDVI describes the change in NDVI between the closest
+#'   date layer and the layer previous  
+#'   
+#'   3. \strong{aNDVI}: anomally NDVI is \emph{(iNDVI-mNDVI)/mNDVI} 
+#'   where mNDVI is the long-term mean NDVI value for the given cell
 #'
 #' The function is most accurate using projected data, i.e. both the NDVI files and point data should
 #' be in UTM (or similar). The function will still work if the data are in latlong, however there may be
@@ -19,10 +19,10 @@
 #' 
 #' The code used in this function is based off code written by Jon Lindsay and Thomas Morrison.
 #'
-#' @param files_desc object returned from *build_ndvi_desc*
+#' @param files_desc object returned from \emph{build_ndvi_desc}
 #' @param array an array with dimensions 1 and 2 being the y and x values (respectively) of the rasters layers
 #'  identified in files_desc, the 3rd dimension is multiple dates for same spatial extent.
-#'  Build using *build_ndvi_array*
+#'  Build using \emph{build_ndvi_array}
 #' @param extent an extent object. contains xmin, xmax, ymin, ymax of the raster layers used to make the array
 #' @param resolution a vector with 2 values indicating the x and y resolution of each raster cell
 #' @param avg_matrix (default: NULL) if calculating anomally NDVI this is a matrix with the long-term mean NDVI values
