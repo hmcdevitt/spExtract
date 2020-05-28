@@ -11,6 +11,9 @@
 #'   
 #'   3. \strong{aNDVI}: anomally NDVI is \emph{(iNDVI-mNDVI)/mNDVI} 
 #'   where mNDVI is the long-term mean NDVI value for the given cell
+#'   
+#'   4. \strong{cNDVI}: cummulative NDVI is the sum of the raw NDVI value for a given number
+#'   of NDVI files backwards from the observation date
 #'
 #' The function is most accurate using projected data, i.e. both the NDVI files and point data should
 #' be in UTM (or similar). The function will still work if the data are in latlong, however there may be
@@ -26,6 +29,7 @@
 #' @param extent an extent object. contains xmin, xmax, ymin, ymax of the raster layers used to make the array
 #' @param resolution a vector with 2 values indicating the x and y resolution of each raster cell
 #' @param avg_matrix (default: NULL) if calculating anomally NDVI this is a matrix with the long-term mean NDVI values
+#' @param cndvi_range (default: NA) if calculating cummulative NDVI, this is the number of scenes back to include
 #' @param date a vector of the dates
 #' @param coords a 2 column matrix/dataframe with the x and y coordinates in same projection as extent
 #'
@@ -38,6 +42,7 @@ ndvi_extraction <- function(files_desc,
                             extent,
                             resolution,
                             avg_matrix = NULL,
+                            cndvi_range = NA, 
                             date,
                             coords) {
 
@@ -47,13 +52,20 @@ ndvi_extraction <- function(files_desc,
 
   # Check if extraction is across multiple dates
   if (length(date) == 1) {multi_extract <- T} else {multi_extract <- F}
+  
+  # Check the correct date range of NDVI scenes is present if cndvi is being calculated
+  if (!is.na(cndvi_range) && ((min(date)-(16*cndvi_range)) < min(files_desc$date))) 
+    stop("NDVI array does not include dates required to calculate cndvi. 
+         Please include as many files back from minimum observation as specified in cndvi_range.")
+  
 
   # Initiate results dataframe
   results <- data.frame(indvi = rep(NA, length(date)),
                         dndvi = rep(NA, length(date)),
-                        andvi = rep(NA, length(date)))
+                        andvi = rep(NA, length(date)),
+                        cndvi = rep(NA, length(date)))
   
-  # Loop throught each dat
+  # Loop through each date
   for(i in 1:length(date)) {
     # find the index of the closest date in the date vector
     z_ind <- which.min(abs(as.numeric(files_desc$date-(date[i]))))
@@ -105,16 +117,32 @@ ndvi_extraction <- function(files_desc,
     # delta NDVI value
     dndvi <- (ndvi_end - ndvi_start) / as.numeric(files_desc$date[hi_zind] - files_desc$date[lo_zind], units = "days")
 
+    ## calculate anomaly NDVI
     if(length(avg_matrix) > 0){
       avg.ndvi.val <- extract_matrix(matrix = avg_matrix, coords = coords[i,], raster_extent = extent, raster_res  = resolution)
       andvi <- (indvi-avg.ndvi.val)/avg.ndvi.val # anomaly NDVI
     }else{
       andvi <- NA
     }
+    
+    ## calculate cummulative NDVI 
+    if(!is.na(cndvi_range)){
+      cndvi_seq <- c()
+      for(c in 1:cndvi_range){
+       cndvi_temp <- extract_array(array = array, extent = extent, 
+                                   coords = coords, third_dim_ind = lo_zind-(1-c), resolution = resolution)
+       cndvi_seq <- c(cndvi_seq, cndvi_temp)
+      }
+      cndvi <- sum(cndvi_seq)
+    }else{
+      cndvi <- NA
+    }
 
+    ## compile results
     results$indvi[i] <- indvi
     results$dndvi[i] <- dndvi
     results$andvi[i] <- andvi
+    results$cndvi[i] <- cndvi
 
   }
 

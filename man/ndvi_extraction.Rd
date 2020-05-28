@@ -10,6 +10,7 @@ ndvi_extraction(
   extent,
   resolution,
   avg_matrix = NULL,
+  cndvi_range = NA,
   date,
   coords
 )
@@ -26,6 +27,8 @@ Build using \emph{build_ndvi_array}}
 \item{resolution}{a vector with 2 values indicating the x and y resolution of each raster cell}
 
 \item{avg_matrix}{(default: NULL) if calculating anomally NDVI this is a matrix with the long-term mean NDVI values}
+
+\item{cndvi_range}{(default: NA) if calculating cummulative NDVI, this is the number of scenes back to include}
 
 \item{date}{a vector of the dates}
 
@@ -46,6 +49,9 @@ This function matches NDVI values to spatial point data. It will return:
   
   3. \strong{aNDVI}: anomally NDVI is \emph{(iNDVI-mNDVI)/mNDVI} 
   where mNDVI is the long-term mean NDVI value for the given cell
+  
+  4. \strong{cNDVI}: cummulative NDVI is the sum of the raw NDVI value for a given number
+  of NDVI files backwards from the observation date
 
 The function is most accurate using projected data, i.e. both the NDVI files and point data should
 be in UTM (or similar). The function will still work if the data are in latlong, however there may be
