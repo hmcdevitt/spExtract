@@ -33,7 +33,7 @@ rain_extract_chirps <- function(rain_array,
   for(i in 1:length(coords_dates)){
     
     # array layer index
-    day_ind <- match(coords_dates[i], rain_dates)
+    day_ind <- match(as.Date(coords_dates[i]), rain_dates)
     
     
     # if cumulative rainfall is needed
