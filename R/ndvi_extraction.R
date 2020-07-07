@@ -130,7 +130,7 @@ ndvi_extraction <- function(files_desc,
       cndvi_seq <- c()
       for(c in 1:cndvi_range){
        cndvi_temp <- extract_array(array = array, extent = extent, 
-                                   coords = coords, third_dim_ind = lo_zind-(1-c), resolution = resolution)
+                                   coords = coords[i,], third_dim_ind = lo_zind-(1-c), resolution = resolution)
        cndvi_seq <- c(cndvi_seq, cndvi_temp)
       }
       cndvi <- sum(cndvi_seq)
