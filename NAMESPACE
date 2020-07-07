@@ -2,6 +2,8 @@
 
 export(build_ndvi_array)
 export(build_ndvi_desc)
+export(build_rain_array)
 export(extract_array)
 export(extract_matrix)
 export(ndvi_extraction)
+export(rain_extract_chirps)
